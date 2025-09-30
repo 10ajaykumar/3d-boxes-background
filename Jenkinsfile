@@ -74,7 +74,6 @@ pipeline {
                             <p>✅ Pipeline succeeded on branch: <b>${env.BRANCH_NAME}</b></p>
                             <ul>
                                 <li>Main image: ${IMAGE_NAME_M}:${MAIN_TAG}</li>
-                                <li>Image version: ${IMAGE_NAME_I}:${IMAGE_TAG}</li>
                             </ul>
                             <p>Build number: ${env.BUILD_NUMBER}</p>
                         </body>
