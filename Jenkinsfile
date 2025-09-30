@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME_M = '10ajaykumar/3d-boxes.main'
         IMAGE_NAME_I = '10ajaykumar/3d-boxes.image'
         MAIN_TAG = 'latest'
-        IMAGE_TAG = '${env.BUILD_NUMBER}'
+        IMAGE_TAG = '${BUILD_NUMBER}'
     }
 
     stages {
