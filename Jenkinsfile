@@ -2,9 +2,9 @@ pipeline {
     agent { label "agent1" }
 
     environment {
-        IMAGE_NAME = '10ajaykumar/3d-boxes'
+        IMAGE_NAME_M = '10ajaykumar/3d-boxes.main'
         MAIN_TAG = 'latest'
-        IMAGE_TAG = '${env.BUILD_NUMBER}'
+        IMAGE_TAG = '${BUILD_NUMBER}'
     }
 
     stages {
@@ -19,36 +19,33 @@ pipeline {
         stage("Build Both Docker Images") {
             steps {
                 script {
-                    echo "Building Dockerfile.main → ${IMAGE_NAME}:${MAIN_TAG}"
-                    sh "docker build -t ${IMAGE_NAME}:${MAIN_TAG} ."
-
-                    echo "Building Dockerfile.image → ${IMAGE_NAME}:${IMAGE_TAG}"
-                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                    echo "Building Dockerfile.main → ${IMAGE_NAME_M}:${MAIN_TAG}"
+                    sh "docker build -t ${IMAGE_NAME_M}:${MAIN_TAG} ."
                 }
             }
         }
 
-        stage("Push Docker Images") {
-            steps {
-                script {
-                    withCredentials([usernamePassword(
-                        credentialsId: "docker_token",
-                        usernameVariable: "docker_tokenUser", 
-                        passwordVariable: "docker_tokenPass"
-                    )]) {
-                        sh 'echo "$docker_tokenPass" | docker login -u "$docker_tokenUser" --password-stdin'
+        // stage("Push Docker Images") {
+        //     steps {
+        //         script {
+        //             withCredentials([usernamePassword(
+        //                 credentialsId: "docker_token",
+        //                 usernameVariable: "docker_tokenUser", 
+        //                 passwordVariable: "docker_tokenPass"
+        //             )]) {
+        //                 sh 'echo "$docker_tokenPass" | docker login -u "$docker_tokenUser" --password-stdin'
 
-                        sh "docker tag ${IMAGE_NAME}:${MAIN_TAG} ${docker_tokenUser}/${IMAGE_NAME}:${MAIN_TAG}"
-                        sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${docker_tokenUser}/${IMAGE_NAME}:${IMAGE_TAG}"
+        //                 sh "docker tag ${IMAGE_NAME_M}:${MAIN_TAG} ${docker_tokenUser}/${IMAGE_NAME_M}:${MAIN_TAG}"
+        //                 sh "docker tag ${IMAGE_NAME_I}:${IMAGE_TAG} ${docker_tokenUser}/${IMAGE_NAME_I}:${IMAGE_TAG}"
 
-                        sh "docker push ${docker_tokenUser}/${IMAGE_NAME}:${MAIN_TAG}"
-                        sh "docker push ${docker_tokenUser}/${IMAGE_NAME}:${IMAGE_TAG}"
+        //                 sh "docker push ${docker_tokenUser}/${IMAGE_NAME_M}:${MAIN_TAG}"
+        //                 sh "docker push ${docker_tokenUser}/${IMAGE_NAME_I}:${IMAGE_TAG}"
 
-                        sh 'rm -f /home/aj/.docker/config.json'
-                    }
-                }
-            }
-        }
+        //                 sh 'rm -f /home/aj/.docker/config.json'
+        //             }
+        //         }
+        //     }
+        // }
 
 
         stage("Deploy Docker Containers") {
@@ -56,13 +53,10 @@ pipeline {
                 script {
                     // Optional: stop old containers
                     sh "docker rm -f 3d-boxes-main || true"
-                    sh "docker rm -f 3d-boxes-image || true"
 
-                    echo "Running container from ${IMAGE_NAME}:${MAIN_TAG} on port 2121"
-                    sh "docker run -d -p 2121:80 --name 3d-boxes-main ${IMAGE_NAME}:${MAIN_TAG}"
+                    echo "Running container from ${IMAGE_NAME_M}:${MAIN_TAG} on port 2121"
+                    sh "docker run -d -p 2121:80 --name 3d-boxes-main ${IMAGE_NAME_M}:${MAIN_TAG}"
 
-                    echo "Running container from ${IMAGE_NAME}:${IMAGE_TAG} on port 2122"
-                    sh "docker run -d -p 2122:80 --name 3d-boxes-image ${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
         }
@@ -79,8 +73,8 @@ pipeline {
                         <body>
                             <p>✅ Pipeline succeeded on branch: <b>${env.BRANCH_NAME}</b></p>
                             <ul>
-                                <li>Main image: ${IMAGE_NAME}:${MAIN_TAG}</li>
-                                <li>Image version: ${IMAGE_NAME}:${IMAGE_TAG}</li>
+                                <li>Main image: ${IMAGE_NAME_M}:${MAIN_TAG}</li>
+                                <li>Image version: ${IMAGE_NAME_I}:${IMAGE_TAG}</li>
                             </ul>
                             <p>Build number: ${env.BUILD_NUMBER}</p>
                         </body>
