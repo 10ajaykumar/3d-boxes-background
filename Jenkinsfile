@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = '10ajaykumar/3d-boxes'
         MAIN_TAG = 'latest'
-        IMAGE_TAG = ${env.BUILD_NUMBER}
+        IMAGE_TAG = '${env.BUILD_NUMBER}'
     }
 
     stages {
