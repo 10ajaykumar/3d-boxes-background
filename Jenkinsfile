@@ -29,27 +29,27 @@ pipeline {
             }
         }
 
-        stage("Push Docker Images") {
-            steps {
-                script {
-                    withCredentials([usernamePassword(
-                        credentialsId: "docker_token",
-                        usernameVariable: "docker_tokenUser", 
-                        passwordVariable: "docker_tokenPass"
-                    )]) {
-                        sh 'echo "$docker_tokenPass" | docker login -u "$docker_tokenUser" --password-stdin'
+        // stage("Push Docker Images") {
+        //     steps {
+        //         script {
+        //             withCredentials([usernamePassword(
+        //                 credentialsId: "docker_token",
+        //                 usernameVariable: "docker_tokenUser", 
+        //                 passwordVariable: "docker_tokenPass"
+        //             )]) {
+        //                 sh 'echo "$docker_tokenPass" | docker login -u "$docker_tokenUser" --password-stdin'
 
-                        sh "docker tag ${IMAGE_NAME_M}:${MAIN_TAG} ${docker_tokenUser}/${IMAGE_NAME_M}:${MAIN_TAG}"
-                        sh "docker tag ${IMAGE_NAME_I}:${IMAGE_TAG} ${docker_tokenUser}/${IMAGE_NAME_I}:${IMAGE_TAG}"
+        //                 sh "docker tag ${IMAGE_NAME_M}:${MAIN_TAG} ${docker_tokenUser}/${IMAGE_NAME_M}:${MAIN_TAG}"
+        //                 sh "docker tag ${IMAGE_NAME_I}:${IMAGE_TAG} ${docker_tokenUser}/${IMAGE_NAME_I}:${IMAGE_TAG}"
 
-                        sh "docker push ${docker_tokenUser}/${IMAGE_NAME_M}:${MAIN_TAG}"
-                        sh "docker push ${docker_tokenUser}/${IMAGE_NAME_I}:${IMAGE_TAG}"
+        //                 sh "docker push ${docker_tokenUser}/${IMAGE_NAME_M}:${MAIN_TAG}"
+        //                 sh "docker push ${docker_tokenUser}/${IMAGE_NAME_I}:${IMAGE_TAG}"
 
-                        sh 'rm -f /home/aj/.docker/config.json'
-                    }
-                }
-            }
-        }
+        //                 sh 'rm -f /home/aj/.docker/config.json'
+        //             }
+        //         }
+        //     }
+        // }
 
 
         stage("Deploy Docker Containers") {
