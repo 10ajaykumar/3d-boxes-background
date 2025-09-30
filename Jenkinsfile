@@ -1,6 +1,9 @@
 pipeline {
     agent { label "agent1" }
 
+    triggers {
+        cron('TZ=Asia/Kolkata/London\nH/3 * * * *')
+
     environment {
         IMAGE_NAME_I = '10ajaykumar/3d-boxes.image'
         MAIN_TAG = 'latest'
