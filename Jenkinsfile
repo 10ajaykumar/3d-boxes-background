@@ -3,7 +3,7 @@ pipeline {
 
 
     triggers {
-        cron('TZ=Asia/Kolkata/London\nH/3 * * * *')
+        cron('TZ=Asia/Kolkata\nH/3 * * * *')
 
     }
     environment {
