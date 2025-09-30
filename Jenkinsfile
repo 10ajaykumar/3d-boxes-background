@@ -2,7 +2,6 @@ pipeline {
     agent { label "agent1" }
 
     environment {
-        IMAGE_NAME_M = '10ajaykumar/3d-boxes.main'
         IMAGE_NAME_I = '10ajaykumar/3d-boxes.image'
         MAIN_TAG = 'latest'
         IMAGE_TAG = '${BUILD_NUMBER}'
@@ -20,9 +19,6 @@ pipeline {
         stage("Build Both Docker Images") {
             steps {
                 script {
-                    echo "Building Dockerfile.main → ${IMAGE_NAME_M}:${MAIN_TAG}"
-                    sh "docker build -t ${IMAGE_NAME_M}:${MAIN_TAG} ."
-
                     echo "Building Dockerfile.image → ${IMAGE_NAME_I}:${IMAGE_TAG}"
                     sh "docker build -t ${IMAGE_NAME_I}:${IMAGE_TAG} ."
                 }
@@ -56,12 +52,7 @@ pipeline {
             steps {
                 script {
                     // Optional: stop old containers
-                    sh "docker rm -f 3d-boxes-main || true"
                     sh "docker rm -f 3d-boxes-image || true"
-
-                    echo "Running container from ${IMAGE_NAME_M}:${MAIN_TAG} on port 2121"
-                    sh "docker run -d -p 2121:80 --name 3d-boxes-main ${IMAGE_NAME_M}:${MAIN_TAG}"
-
                     echo "Running container from ${IMAGE_NAME_I}:${IMAGE_TAG} on port 2122"
                     sh "docker run -d -p 2122:80 --name 3d-boxes-image ${IMAGE_NAME_I}:${IMAGE_TAG}"
                 }
@@ -80,7 +71,6 @@ pipeline {
                         <body>
                             <p>✅ Pipeline succeeded on branch: <b>${env.BRANCH_NAME}</b></p>
                             <ul>
-                                <li>Main image: ${IMAGE_NAME_M}:${MAIN_TAG}</li>
                                 <li>Image version: ${IMAGE_NAME_I}:${IMAGE_TAG}</li>
                             </ul>
                             <p>Build number: ${env.BUILD_NUMBER}</p>
